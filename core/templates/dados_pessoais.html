@@ -1,3 +1,4 @@
+
 {% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -5,14 +6,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal do Aluno - Dados Pessoais</title>
+
     <link rel="stylesheet" href="{% static 'core/css/dadospessoais.css' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
+
 <body>
     <div class="dashboard-container">
+
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="logo">
@@ -20,7 +24,7 @@
                     <i class="fas fa-graduation-cap"></i>
                 </div>
             </div>
-            
+
             <nav>
                 <ul class="nav-menu">
                     <li class="nav-item">
@@ -29,36 +33,42 @@
                             Dashboard
                         </a>
                     </li>
+
                     <li class="nav-item">
                         <a href="{% url 'pagamentos' %}" class="nav-link">
                             <i class="fas fa-credit-card"></i>
                             Pagamentos
                         </a>
                     </li>
+
                     <li class="nav-item">
                         <a href="{% url 'dados_pessoais' %}" class="nav-link active">
                             <i class="fas fa-edit"></i>
                             Dados Pessoais
                         </a>
                     </li>
+
                     <li class="nav-item">
                         <a href="{% url 'disciplinas' %}" class="nav-link">
                             <i class="fas fa-book"></i>
                             Disciplinas
                         </a>
                     </li>
+
                     <li class="nav-item">
                         <a href="{% url 'documentos' %}" class="nav-link">
                             <i class="fas fa-file-alt"></i>
                             Documentos
                         </a>
                     </li>
+
                     <li class="nav-item">
                         <a href="{% url 'notas' %}" class="nav-link">
                             <i class="fas fa-sticky-note"></i>
                             Notas
                         </a>
                     </li>
+
                     <li class="nav-item">
                         <a href="#" class="nav-link">
                             <i class="fas fa-bell"></i>
@@ -66,7 +76,7 @@
                         </a>
                     </li>
                 </ul>
-                
+
                 <div class="logout-btn">
                     <a href="{% url 'logout' %}" class="nav-link">
                         <i class="fas fa-sign-out-alt"></i>
@@ -78,22 +88,25 @@
 
         <!-- Main Content -->
         <main class="main-content">
+
             <!-- Header -->
             <header class="header">
                 <div class="search-bar">
                     <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Search...">
+                    <input type="text" placeholder="Pesquisar...">
                 </div>
-                
+
                 <div class="user-profile">
-                    <div class="user-avatar">JS</div>
-                    <div class="user-info">
-                        <h4>João Silva</h4>
-                        <p>3º Período</p>
+                    <div class="user-avatar">
+                        {{ nome|slice:":2"|upper }}
                     </div>
+
+                    <div class="user-info">
+                        <h4>{{ nome }}</h4>
+                    </div>
+
                     <div class="notification-icon">
                         <i class="fas fa-bell"></i>
-                        <span class="notification-badge">3</span>
                     </div>
                 </div>
             </header>
@@ -101,43 +114,47 @@
             <!-- Personal Data Section -->
             <section class="content-section">
                 <h2 class="section-title">Dados Pessoais</h2>
+
                 <div class="personal-data-grid">
+
                     <div class="data-card">
                         <div class="data-label">Nome Completo</div>
                         <div class="data-value">{{ aluno.usuario.nome }}</div>
                     </div>
+
                     <div class="data-card">
                         <div class="data-label">E-mail</div>
                         <div class="data-value">{{ aluno.usuario.email }}</div>
                     </div>
+
                     <div class="data-card">
                         <div class="data-label">Matrícula</div>
                         <div class="data-value">{{ aluno.matricula }}</div>
                     </div>
+
                     <div class="data-card">
                         <div class="data-label">Curso</div>
                         <div class="data-value">{{ aluno.curso }}</div>
                     </div>
+
                     <div class="data-card">
                         <div class="data-label">Período</div>
                         <div class="data-value">{{ aluno.periodo }}</div>
                     </div>
-                    <div class="data-card">
-                        <div class="data-label">Status</div>
-                        <div class="data-value">Ativo</div>
-                    </div>
+
                 </div>
-                
+
                 <div class="edit-profile-section">
-                    <h3 class="edit-profile-title">Atualizar Informações</h3>
-                    <p class="edit-profile-subtitle">Mantenha seus dados sempre atualizados para receber informações importantes</p>
-                    <a href="#" class="edit-btn">
-                        <i class="fas fa-edit"></i> Editar Perfil
-                    </a>
+                    <h3 class="edit-profile-title">Atualização de Informações</h3>
+
+                    <p class="edit-profile-subtitle">
+                        Para solicitar a atualização dos seus dados cadastrais,
+                        entre em contato com a secretaria acadêmica.
+                    </p>
                 </div>
+
             </section>
         </main>
     </div>
 </body>
 </html>
-

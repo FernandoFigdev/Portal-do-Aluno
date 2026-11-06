@@ -1,3 +1,10 @@
+
+{% comment %}
+ÁREA DE PAGAMENTOS — FORA DO ESCOPO ATUAL DO PROJETO.
+
+O código foi preservado para possível reutilização futura.
+Não excluir sem alinhamento com a equipe.
+
 {% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -13,14 +20,12 @@
 </head>
 <body>
     <div class="dashboard-container">
-        <!-- Sidebar -->
         <aside class="sidebar">
             <div class="logo">
                 <div class="logo-icon">
                     <i class="fas fa-graduation-cap"></i>
                 </div>
             </div>
-            
             <nav>
                 <ul class="nav-menu">
                     <li class="nav-item">
@@ -66,7 +71,6 @@
                         </a>
                     </li>
                 </ul>
-                
                 <div class="logout-btn">
                     <a href="{% url 'logout' %}" class="nav-link">
                         <i class="fas fa-sign-out-alt"></i>
@@ -76,15 +80,12 @@
             </nav>
         </aside>
 
-        <!-- Main Content -->
         <main class="main-content">
-            <!-- Header -->
             <header class="header">
                 <div class="search-bar">
                     <i class="fas fa-search"></i>
                     <input type="text" placeholder="Search...">
                 </div>
-                
                 <div class="user-profile">
                     <div class="user-avatar">JS</div>
                     <div class="user-info">
@@ -98,7 +99,6 @@
                 </div>
             </header>
 
-            <!-- Payments Section -->
             <section class="content-section">
                 <h2 class="section-title">Pagamentos</h2>
                 <table class="payments-table">
@@ -119,7 +119,9 @@
                             <td data-label="Status" class="status-{{ p.status|lower }}">{{ p.status }}</td>
                         </tr>
                         {% empty %}
-                        <tr><td colspan="4" style="text-align: center;">Nenhum pagamento registrado.</td></tr>
+                        <tr>
+                            <td colspan="4" style="text-align: center;">Nenhum pagamento registrado.</td>
+                        </tr>
                         {% endfor %}
                     </tbody>
                 </table>
@@ -128,4 +130,4 @@
     </div>
 </body>
 </html>
-
+{% endcomment %}

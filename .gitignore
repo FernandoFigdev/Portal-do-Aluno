@@ -44,3 +44,6 @@ build/
 # Arquivos do sistema
 .DS_Store
 Thumbs.db
+
+# Arquivos enviados pelos usuários
+media/

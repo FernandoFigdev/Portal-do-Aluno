@@ -271,9 +271,17 @@ class Documento(models.Model):
         related_name='documentos'
     )
 
+    # Campo antigo mantido para preservar endereços já cadastrados.
     arquivo_url = models.CharField(
         max_length=500,
         blank=True
+    )
+
+    # Novo campo para upload de arquivos pela secretaria.
+    arquivo = models.FileField(
+        upload_to='documentos/%Y/%m/',
+        blank=True,
+        null=True
     )
 
     data_upload = models.DateField(auto_now_add=True)
