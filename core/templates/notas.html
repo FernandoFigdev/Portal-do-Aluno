@@ -1,3 +1,4 @@
+
 {% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -5,14 +6,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal do Aluno - Notas</title>
+
     <link rel="stylesheet" href="{% static 'core/css/notas.css' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
+
 <body>
     <div class="dashboard-container">
+
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="logo">
@@ -20,7 +24,7 @@
                     <i class="fas fa-graduation-cap"></i>
                 </div>
             </div>
-            
+
             <nav>
                 <ul class="nav-menu">
                     <li class="nav-item">
@@ -29,36 +33,42 @@
                             Dashboard
                         </a>
                     </li>
+
                     <li class="nav-item">
                         <a href="{% url 'pagamentos' %}" class="nav-link">
                             <i class="fas fa-credit-card"></i>
                             Pagamentos
                         </a>
                     </li>
+
                     <li class="nav-item">
                         <a href="{% url 'dados_pessoais' %}" class="nav-link">
                             <i class="fas fa-edit"></i>
                             Dados Pessoais
                         </a>
                     </li>
+
                     <li class="nav-item">
                         <a href="{% url 'disciplinas' %}" class="nav-link">
                             <i class="fas fa-book"></i>
                             Disciplinas
                         </a>
                     </li>
+
                     <li class="nav-item">
                         <a href="{% url 'documentos' %}" class="nav-link">
                             <i class="fas fa-file-alt"></i>
                             Documentos
                         </a>
                     </li>
+
                     <li class="nav-item">
                         <a href="{% url 'notas' %}" class="nav-link active">
                             <i class="fas fa-sticky-note"></i>
                             Notas
                         </a>
                     </li>
+
                     <li class="nav-item">
                         <a href="#" class="nav-link">
                             <i class="fas fa-bell"></i>
@@ -66,7 +76,7 @@
                         </a>
                     </li>
                 </ul>
-                
+
                 <div class="logout-btn">
                     <a href="{% url 'logout' %}" class="nav-link">
                         <i class="fas fa-sign-out-alt"></i>
@@ -78,19 +88,23 @@
 
         <!-- Main Content -->
         <main class="main-content">
+
             <!-- Header -->
             <header class="header">
                 <div class="search-bar">
                     <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Search...">
+                    <input type="text" placeholder="Pesquisar notas...">
                 </div>
-                
+
                 <div class="user-profile">
-                    <div class="user-avatar">JS</div>
-                    <div class="user-info">
-                        <h4>João Silva</h4>
-                        <p>3º Período</p>
+                    <div class="user-avatar">
+                        {{ nome|slice:":2"|upper }}
                     </div>
+
+                    <div class="user-info">
+                        <h4>{{ nome }}</h4>
+                    </div>
+
                     <div class="notification-icon">
                         <i class="fas fa-bell"></i>
                         <span class="notification-badge">3</span>
@@ -104,28 +118,31 @@
                     <div class="summary-icon">
                         <i class="fas fa-chart-line"></i>
                     </div>
-                    <div class="summary-value">8.5</div>
+                    <div class="summary-value">--</div>
                     <div class="summary-label">Média Geral</div>
                 </div>
+
                 <div class="summary-card">
                     <div class="summary-icon">
                         <i class="fas fa-trophy"></i>
                     </div>
-                    <div class="summary-value">9.2</div>
+                    <div class="summary-value">--</div>
                     <div class="summary-label">Maior Nota</div>
                 </div>
+
                 <div class="summary-card">
                     <div class="summary-icon">
                         <i class="fas fa-tasks"></i>
                     </div>
-                    <div class="summary-value">12</div>
+                    <div class="summary-value">--</div>
                     <div class="summary-label">Avaliações</div>
                 </div>
+
                 <div class="summary-card">
                     <div class="summary-icon">
                         <i class="fas fa-calendar-check"></i>
                     </div>
-                    <div class="summary-value">85%</div>
+                    <div class="summary-value">--</div>
                     <div class="summary-label">Aproveitamento</div>
                 </div>
             </div>
@@ -133,42 +150,63 @@
             <!-- Grades Section -->
             <section class="content-section">
                 <h2 class="section-title">Notas</h2>
-                
+
                 {% if notas %}
-                <table class="grades-table">
-                    <thead>
-                        <tr>
-                            <th>Disciplina</th>
-                            <th>Avaliação</th>
-                            <th>Nota</th>
-                            <th>Data</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for n in notas %}
-                        <tr>
-                            <td data-label="Disciplina" class="subject-name">{{ n.matricula.disciplina.nome }}</td>
-                            <td data-label="Avaliação" class="evaluation-type">{{ n.avaliacao }}</td>
-                            <td data-label="Nota">
-                                <span class="grade-value {% if n.valor >= 9 %}grade-excellent{% elif n.valor >= 7 %}grade-good{% elif n.valor >= 5 %}grade-average{% else %}grade-poor{% endif %}">
-                                    {{ n.valor }}
-                                </span>
-                            </td>
-                            <td data-label="Data" class="grade-date">{{ n.data }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                    <table class="grades-table">
+                        <thead>
+                            <tr>
+                                <th>Disciplina</th>
+                                <th>Avaliação</th>
+                                <th>Nota</th>
+                                <th>Data</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for n in notas %}
+                                <tr>
+                                    <td data-label="Disciplina" class="subject-name">
+                                        {{ n.matricula.disciplina.nome }}
+                                    </td>
+
+                                    <td data-label="Avaliação" class="evaluation-type">
+                                        {{ n.avaliacao }}
+                                    </td>
+
+                                    <td data-label="Nota">
+                                        <span class="grade-value {% if n.valor >= 9 %}grade-excellent{% elif n.valor >= 7 %}grade-good{% elif n.valor >= 5 %}grade-average{% else %}grade-poor{% endif %}">
+                                            {{ n.valor|floatformat:2 }}
+                                        </span>
+                                    </td>
+
+                                    <td data-label="Data" class="grade-date">
+                                        {{ n.data|date:"d/m/Y" }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
                 {% else %}
-                <div class="empty-state">
-                    <i class="fas fa-clipboard-list"></i>
-                    <h3>Nenhuma nota registrada</h3>
-                    <p>Suas notas aparecerão aqui assim que forem lançadas pelos professores.<br>Acompanhe regularmente para ficar atualizado sobre seu desempenho.</p>
-                </div>
+                    <div class="empty-state">
+                        <i class="fas fa-clipboard-list"></i>
+
+                        <h3>Nenhuma nota registrada</h3>
+
+                        <p>
+                            Suas notas aparecerão aqui assim que forem lançadas pelos professores.
+                            <br>
+                            Acompanhe regularmente para ficar atualizado sobre seu desempenho.
+                        </p>
+                    </div>
                 {% endif %}
             </section>
+
         </main>
     </div>
+
+    <!-- JavaScript do Portal -->
+    <script src="{% static 'core/js/portal.js' %}"></script>
+
 </body>
 </html>
-

@@ -1,3 +1,4 @@
+
 {% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -5,14 +6,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal do Aluno - Disciplinas</title>
+
     <link rel="stylesheet" href="{% static 'core/css/disciplinas.css' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
+
 <body>
     <div class="dashboard-container">
+
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="logo">
@@ -20,7 +24,7 @@
                     <i class="fas fa-graduation-cap"></i>
                 </div>
             </div>
-            
+
             <nav>
                 <ul class="nav-menu">
                     <li class="nav-item">
@@ -29,36 +33,42 @@
                             Dashboard
                         </a>
                     </li>
+
                     <li class="nav-item">
                         <a href="{% url 'pagamentos' %}" class="nav-link">
                             <i class="fas fa-credit-card"></i>
                             Pagamentos
                         </a>
                     </li>
+
                     <li class="nav-item">
                         <a href="{% url 'dados_pessoais' %}" class="nav-link">
                             <i class="fas fa-edit"></i>
                             Dados Pessoais
                         </a>
                     </li>
+
                     <li class="nav-item">
                         <a href="{% url 'disciplinas' %}" class="nav-link active">
                             <i class="fas fa-book"></i>
                             Disciplinas
                         </a>
                     </li>
+
                     <li class="nav-item">
                         <a href="{% url 'documentos' %}" class="nav-link">
                             <i class="fas fa-file-alt"></i>
                             Documentos
                         </a>
                     </li>
+
                     <li class="nav-item">
                         <a href="{% url 'notas' %}" class="nav-link">
                             <i class="fas fa-sticky-note"></i>
                             Notas
                         </a>
                     </li>
+
                     <li class="nav-item">
                         <a href="#" class="nav-link">
                             <i class="fas fa-bell"></i>
@@ -66,7 +76,7 @@
                         </a>
                     </li>
                 </ul>
-                
+
                 <div class="logout-btn">
                     <a href="{% url 'logout' %}" class="nav-link">
                         <i class="fas fa-sign-out-alt"></i>
@@ -78,19 +88,23 @@
 
         <!-- Main Content -->
         <main class="main-content">
+
             <!-- Header -->
             <header class="header">
                 <div class="search-bar">
                     <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Search...">
+                    <input type="text" placeholder="Pesquisar disciplinas...">
                 </div>
-                
+
                 <div class="user-profile">
-                    <div class="user-avatar">JS</div>
-                    <div class="user-info">
-                        <h4>João Silva</h4>
-                        <p>3º Período</p>
+                    <div class="user-avatar">
+                        {{ nome|slice:":2"|upper }}
                     </div>
+
+                    <div class="user-info">
+                        <h4>{{ nome }}</h4>
+                    </div>
+
                     <div class="notification-icon">
                         <i class="fas fa-bell"></i>
                         <span class="notification-badge">3</span>
@@ -101,40 +115,65 @@
             <!-- Subjects Section -->
             <section class="content-section">
                 <h2 class="section-title">Disciplinas Matriculadas</h2>
-                
+
                 {% if disciplinas %}
-                <div class="subjects-grid">
-                    {% for d in disciplinas %}
-                    <div class="subject-card">
-                        <div class="subject-header">
-                            <div class="subject-icon">
-                                <i class="fas fa-book"></i>
+                    <div class="subjects-grid">
+                        {% for d in disciplinas %}
+                            <div class="subject-card">
+
+                                <div class="subject-header">
+                                    <div class="subject-icon">
+                                        <i class="fas fa-book"></i>
+                                    </div>
+
+                                    <div class="subject-code">
+                                        {{ d.codigo }}
+                                    </div>
+                                </div>
+
+                                <h3 class="subject-title">
+                                    {{ d.nome }}
+                                </h3>
+
+                                <p class="subject-description">
+                                    {{ d.descricao }}
+                                </p>
+
+                                <div class="subject-footer">
+                                    <button class="view-btn" type="button">
+                                        <i class="fas fa-eye"></i>
+                                        Ver Detalhes
+                                    </button>
+
+                                    <div class="subject-progress">
+                                        Em andamento
+                                    </div>
+                                </div>
+
                             </div>
-                            <div class="subject-code">{{ d.codigo }}</div>
-                        </div>
-                        <h3 class="subject-title">{{ d.nome }}</h3>
-                        <p class="subject-description">{{ d.descricao }}</p>
-                        <div class="subject-footer">
-                            <button class="view-btn">
-                                <i class="fas fa-eye"></i> Ver Detalhes
-                            </button>
-                            <div class="subject-progress">
-                                Em andamento
-                            </div>
-                        </div>
+                        {% endfor %}
                     </div>
-                    {% endfor %}
-                </div>
+
                 {% else %}
-                <div class="empty-state">
-                    <i class="fas fa-book-open"></i>
-                    <h3>Nenhuma disciplina encontrada</h3>
-                    <p>Você ainda não está matriculado em nenhuma disciplina.<br>Entre em contato com a secretaria para mais informações.</p>
-                </div>
+                    <div class="empty-state">
+                        <i class="fas fa-book-open"></i>
+
+                        <h3>Nenhuma disciplina encontrada</h3>
+
+                        <p>
+                            Você ainda não está matriculado em nenhuma disciplina.
+                            <br>
+                            Entre em contato com a secretaria para mais informações.
+                        </p>
+                    </div>
                 {% endif %}
             </section>
+
         </main>
     </div>
+
+    <!-- JavaScript do Portal -->
+    <script src="{% static 'core/js/portal.js' %}"></script>
+
 </body>
 </html>
-
