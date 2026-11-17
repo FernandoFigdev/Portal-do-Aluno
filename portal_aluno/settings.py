@@ -73,6 +73,12 @@ else:
         }
     }
 
+# Banco acadêmico do projeto original
+DATABASES["academico_legado"] = {
+    "ENGINE": "django.db.backends.sqlite3",
+    "NAME": BASE_DIR / "bd_academico.sqlite3",
+}
+
 AUTH_USER_MODEL = "accounts.User"
 
 AUTH_PASSWORD_VALIDATORS = [
