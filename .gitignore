@@ -4,43 +4,51 @@ ENV/
 env/
 .venv/
 
-# Arquivos de banco de dados locais
+# Bancos de dados locais
 db.sqlite3
 *.sqlite3
 
-# Cache do Python
+# Cache e bytecode do Python
 __pycache__/
 *.py[cod]
 *$py.class
 
+# Testes e cobertura
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Metadados de pacotes
+*.egg-info/
+
 # Arquivos temporários
 *.log
-*.pot
-*.pyc
-*.pyo
-*.pyd
 *.pid
 *.swp
 *.swo
 *.bak
 *.tmp
 
-# Arquivos de ambiente
+# Variáveis de ambiente (modelo versionado como exceção)
 .env
 *.env
+!.env.example
 
-# Configurações específicas de IDEs
+# Mídia enviada por usuários (Django)
+media/
+
+# IDEs
 .vscode/
 .idea/
 *.sublime-workspace
 *.sublime-project
 
-# Pastas de deploy ou compilação
+# Deploy e compilação
 staticfiles/
 node_modules/
 dist/
 build/
 
-# Arquivos do sistema
+# Sistema operacional
 .DS_Store
 Thumbs.db

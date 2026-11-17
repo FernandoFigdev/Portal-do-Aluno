@@ -1,109 +1,67 @@
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from .models import Usuario, Aluno, Matricula, Disciplina, Nota, Pagamento, Aviso, Documento
+from django.db.models import Count
+from rest_framework.generics import ListAPIView
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from .models import AuditLog
+from .permissions import IsAdministrator
+from .serializers import AuditLogSerializer
 
 
-# ==== VIEW DE LOGIN ====
-def login_view(request):
-    if request.method == 'POST':
-        email = request.POST.get('email')
-        senha = request.POST.get('senha')
+class DashboardView(APIView):
+    """Painel inicial (RF04): somente o que o perfil autenticado pode ver."""
 
-        try:
-            usuario = Usuario.objects.get(email=email, senha=senha)
+    def get(self, request):
+        from certificates.models import Certificate
+        from documents.models import DocumentRequest
+        from integrations.services import get_shortcuts
 
-            # Salvar dados na sessão
-            request.session['usuario_id'] = usuario.id
-            request.session['usuario_nome'] = usuario.nome
-            request.session['usuario_tipo'] = usuario.tipo
+        user = request.user
+        statuses = {s: 0 for s in DocumentRequest.Status.values}
 
-            return redirect('dashboard')
+        if user.role == "STUDENT" and hasattr(user, "student_profile"):
+            rows = (
+                DocumentRequest.objects.filter(student=user.student_profile)
+                .values("status").annotate(total=Count("id"))
+            )
+            for row in rows:
+                statuses[row["status"]] = row["total"]
+            return Response({
+                "role": user.role,
+                "requests": {"total": sum(statuses.values()), "by_status": statuses},
+                "certificates": Certificate.objects.filter(student=user.student_profile).count(),
+                "shortcuts": get_shortcuts(),
+            })
 
-        except Usuario.DoesNotExist:
-            messages.error(request, 'Email ou senha inválidos.')
+        if user.is_secretary:
+            rows = DocumentRequest.objects.values("status").annotate(total=Count("id"))
+            for row in rows:
+                statuses[row["status"]] = row["total"]
+            open_states = ("RECEIVED", "IN_REVIEW", "AWAITING_INFO")
+            return Response({
+                "role": user.role,
+                "requests": {
+                    "total": sum(statuses.values()),
+                    "open": sum(statuses[s] for s in open_states),
+                    "by_status": statuses,
+                },
+                "certificates": Certificate.objects.count(),
+                "shortcuts": get_shortcuts(),
+            })
 
-    return render(request, 'login.html')
-
-
-# ==== VIEW DO DASHBOARD ====
-def dashboard(request):
-    if 'usuario_id' not in request.session:
-        return redirect('login')
-
-    usuario_id = request.session.get('usuario_id')
-    usuario_tipo = request.session.get('usuario_tipo')
-
-    if usuario_tipo != 'aluno':
-        return render(request, 'acesso_negado.html')
-
-    try:
-        aluno = Aluno.objects.get(usuario_id=usuario_id)
-    except Aluno.DoesNotExist:
-        return render(request, 'acesso_negado.html')
-
-    matriculas = Matricula.objects.filter(aluno=aluno)
-    disciplinas = Disciplina.objects.filter(id__in=matriculas.values_list('disciplina_id', flat=True))
-    notas = Nota.objects.filter(matricula__in=matriculas)
-    pagamentos = Pagamento.objects.filter(aluno=aluno)
-    avisos = Aviso.objects.filter(publico_alvo__in=['todos', 'aluno'])
-    documentos = Documento.objects.filter(aluno=aluno)
-
-    context = {
-        'nome': request.session.get('usuario_nome'),
-        'matricula': aluno.matricula,
-        'curso': aluno.curso,
-        'periodo': aluno.periodo,
-        'disciplinas': disciplinas,
-        'notas': notas,
-        'pagamentos': pagamentos,
-        'avisos': avisos,
-        'documentos': documentos,
-    }
-
-    return render(request, 'dashboard.html', context)
+        return Response({"role": user.role, "shortcuts": get_shortcuts()})
 
 
-def verificar_login(request):
-    if 'usuario_id' not in request.session:
-        return redirect('login')
+class AuditLogListView(ListAPIView):
+    """Consulta da trilha de auditoria (RF25). Somente administradores."""
 
-def pagamentos(request):
-    verificar_login(request)
-    aluno = Aluno.objects.get(usuario_id=request.session.get('usuario_id'))
-    pagamentos = Pagamento.objects.filter(aluno=aluno)
-    return render(request, 'pagamentos.html', {'pagamentos': pagamentos, 'nome': request.session.get('usuario_nome')})
+    permission_classes = [IsAdministrator]
+    serializer_class = AuditLogSerializer
 
-
-def dados_pessoais(request):
-    verificar_login(request)
-    aluno = Aluno.objects.get(usuario_id=request.session.get('usuario_id'))
-    return render(request, 'dados_pessoais.html', {'aluno': aluno, 'nome': request.session.get('usuario_nome')})
-
-
-def disciplinas(request):
-    verificar_login(request)
-    aluno = Aluno.objects.get(usuario_id=request.session.get('usuario_id'))
-    matriculas = Matricula.objects.filter(aluno=aluno)
-    disciplinas = Disciplina.objects.filter(id__in=matriculas.values_list('disciplina_id', flat=True))
-    return render(request, 'disciplinas.html', {'disciplinas': disciplinas, 'nome': request.session.get('usuario_nome')})
-
-
-def documentos(request):
-    verificar_login(request)
-    aluno = Aluno.objects.get(usuario_id=request.session.get('usuario_id'))
-    documentos = Documento.objects.filter(aluno=aluno)
-    return render(request, 'documentos.html', {'documentos': documentos, 'nome': request.session.get('usuario_nome')})
-
-
-def notas(request):
-    verificar_login(request)
-    aluno = Aluno.objects.get(usuario_id=request.session.get('usuario_id'))
-    matriculas = Matricula.objects.filter(aluno=aluno)
-    notas = Nota.objects.filter(matricula__in=matriculas)
-    return render(request, 'notas.html', {'notas': notas, 'nome': request.session.get('usuario_nome')})
-
-# ==== VIEW DE LOGOUT ====
-def logout_view(request):
-    request.session.flush()
-    return redirect('login')
-
+    def get_queryset(self):
+        qs = AuditLog.objects.select_related("actor")
+        params = self.request.query_params
+        for param, field in (("acao", "action"), ("tipo", "target_type"), ("alvo", "target_id")):
+            if params.get(param):
+                qs = qs.filter(**{field: params[param]})
+        return qs
